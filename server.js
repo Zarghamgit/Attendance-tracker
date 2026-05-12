@@ -183,12 +183,23 @@ app.get('/api/student-stats/:id', (req, res) => {
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rawData = xlsx.utils.sheet_to_json(sheet, { header: 1 });
     
-    const headerRow = rawData[0];
-    const idIdx = headerRow.findIndex(h => h && h.toString().toLowerCase().includes('id'));
+    // Find the header row (contains 'Name', 'Roll', or 'ID')
+    let headerRowIndex = rawData.findIndex(row => 
+      Array.isArray(row) && row.some(cell => cell && (
+        cell.toString().toLowerCase().includes('name') || 
+        cell.toString().toLowerCase().includes('roll') || 
+        cell.toString().toLowerCase().includes('id')
+      ))
+    );
+    
+    if (headerRowIndex === -1) headerRowIndex = 0;
+
+    const headerRow = rawData[headerRowIndex];
+    const idIdx = headerRow.findIndex(h => h && h.toString().toLowerCase().includes('sr.no') || h && h.toString().toLowerCase().includes('id') || h && h.toString().toLowerCase().includes('roll'));
     const requiredIdx = headerRow.findIndex(h => h && h.toString().toLowerCase().includes('required'));
     
-    // Find student row
-    const studentRow = rawData.find(row => row[idIdx] && row[idIdx].toString() === id);
+    // Find student row (skip headers)
+    const studentRow = rawData.slice(headerRowIndex + 1).find(row => row[idIdx] && row[idIdx].toString() === id);
     if (!studentRow) return res.status(404).json({ error: 'Student not found' });
     
     const stats = [];
