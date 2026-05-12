@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Attendance Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div class="header-content">
+          <div class="header-top">
+            <h1>Attendance Pro</h1>
+            <div class="header-actions">
+              <button id="btn-history" class="btn-icon" title="History">📜</button>
+              <button id="btn-settings" class="btn-icon" title="Settings">⚙️</button>
+            </div>
+          </div>
+          <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+          <p id="stats" class="stats">0 / 0 Students</p>
+        </div>
+      </header>
+
+      <main class="attendance-container">
+        <div id="student-card-container" class="card-wrapper">
+          <!-- Student cards will be injected here -->
+        </div>
+      </main>
+
+      <footer class="controls">
+        <div class="button-group">
+          <button id="btn-absent" class="btn btn-absent" disabled>
+            <span class="icon">✕</span>
+            <span class="label">Absent</span>
+          </button>
+          <button id="btn-leave" class="btn btn-leave" disabled>
+            <span class="icon">!</span>
+            <span class="label">Leave</span>
+          </button>
+          <button id="btn-present" class="btn btn-present" disabled>
+            <span class="icon">✓</span>
+            <span class="label">Present</span>
+          </button>
+        </div>
+      </footer>
+
+      <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+          <h2>Settings</h2>
+          <p>Connect your Google Sheet</p>
+          <div class="input-group">
+            <label for="script-url">Apps Script URL</label>
+            <input type="text" id="script-url" placeholder="https://script.google.com/macros/s/.../exec">
+          </div>
+          <div class="settings-actions">
+            <button id="btn-save-settings" class="btn-primary">Save & Connect</button>
+            <button id="btn-import-trigger" class="btn-secondary">Import Students (Excel)</button>
+            <input type="file" id="import-file" accept=".xlsx, .xls" style="display: none;">
+            <button id="btn-reset-local" class="btn-secondary">Reset to Local Server</button>
+            <button id="btn-close-settings" class="btn-secondary">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="history-screen" class="modal hidden">
+        <div class="modal-content wide">
+          <div class="modal-header">
+            <h2>Attendance History</h2>
+            <div class="modal-header-actions">
+              <button id="btn-export-history" class="btn-secondary-small" title="Export to Excel">Export Excel</button>
+              <button id="btn-close-history" class="btn-icon-small">✕</button>
+            </div>
+          </div>
+          <div class="history-table-container">
+            <table id="history-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Student</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="history-body">
+                <!-- Data injected here -->
+              </tbody>
+            </table>
+            <div id="history-loader" class="loader hidden">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="stats-modal" class="modal hidden">
+        <div class="modal-content wide">
+          <div class="modal-header">
+            <h2 id="stats-student-name">Student Analytics</h2>
+            <button id="btn-close-stats" class="btn-icon-small">✕</button>
+          </div>
+          <div class="stats-summary">
+            <div class="summary-item">
+              <span class="summary-label">Attendance</span>
+              <span id="stat-attendance-pct" class="summary-value">0%</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Target</span>
+              <span id="stat-target-pct" class="summary-value">0%</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Status</span>
+              <span id="stat-status" class="summary-value">On Track</span>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="attendance-chart"></canvas>
+          </div>
+          <div class="stats-footer">
+            <p id="stats-info">Attendance over time vs required threshold.</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="completion-screen" class="modal hidden">
+        <div class="modal-content">
+          <div class="success-icon">🏆</div>
+          <h2>Session Complete</h2>
+          <p>All students have been marked.</p>
+          <div class="completion-actions">
+            <button id="btn-restart" class="btn btn-primary">Start New Session</button>
+            <button id="btn-export-complete" class="btn btn-secondary">Export Excel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
